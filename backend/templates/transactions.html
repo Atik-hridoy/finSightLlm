@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Transactions</h1>
+    <p class="subtitle">Recent activity from your ledger.</p>
+</div>
+
+<section class="panel">
+    <div class="table-wrap">
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>$1,200</td>
+                    <td>Food</td>
+                    <td class="tag tag--expense">Expense</td>
+                </tr>
+                <tr>
+                    <td>$5,000</td>
+                    <td>Salary</td>
+                    <td class="tag tag--income">Income</td>
+                </tr>
+                <tr>
+                    <td>$320</td>
+                    <td>Utilities</td>
+                    <td class="tag tag--expense">Expense</td>
+                </tr>
+                <tr>
+                    <td>$760</td>
+                    <td>Freelance</td>
+                    <td class="tag tag--income">Income</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinSight AI</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar__brand">FinSight AI</div>
+        <nav class="navbar__links">
+            <a href="/">Dashboard</a>
+            <a href="/chat/">AI Chat</a>
+            <a href="/transactions/">Transactions</a>
+        </nav>
+    </div>
+
+    <main class="container">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

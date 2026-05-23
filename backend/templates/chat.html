@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>AI Chat</h1>
+    <p class="subtitle">Ask your financial assistant a question.</p>
+</div>
+
+<section class="panel">
+    <form method="post" class="chat-form">
+        {% csrf_token %}
+        <input type="text" name="question" placeholder="Ask something like: What is my highest expense?" class="chat-input">
+        <button type="submit" class="button">Send</button>
+    </form>
+
+    <div class="response-card">
+        <h3>AI Response</h3>
+        <p>Your highest expense is Food category. Try asking about monthly savings next.</p>
+    </div>
+</section>
+{% endblock %}

@@ -17,12 +17,13 @@ from datetime import date, timedelta
 from collections import defaultdict
 from typing import Dict, List, Tuple
 
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Q
+from django.db.models.functions import ExtractMonth
 
 # Import the Transaction model – adjust the path if your app name differs.
 try:
     from apps.finance.models import Transaction
-except Exception as e:
+except Exception:
     # Fallback placeholder for early development – returns empty data.
     Transaction = None
 
@@ -58,6 +59,10 @@ def get_financial_context(user) -> Dict:
             "top_categories": [],
             "savings_rate": None,
             "anomalies": [],
+            "monthly_expenses": [],
+            "average_expense": 0.0,
+            "risk_level": "low",
+            "savings": 0.0,
         }
 
     # Filter transactions for the user for the current month.
@@ -66,8 +71,8 @@ def get_financial_context(user) -> Dict:
 
     # Aggregate totals.
     totals = qs.aggregate(
-        total_income=Sum('amount', filter=F('amount') > 0),
-        total_expense=Sum('amount', filter=F('amount') < 0),
+        total_income=Sum('amount', filter=Q(amount__gt=0)),
+        total_expense=Sum('amount', filter=Q(amount__lt=0)),
     )
 
     total_income = totals["total_income"] or 0
@@ -84,10 +89,30 @@ def get_financial_context(user) -> Dict:
         (c["category"], float(c["spent"])) for c in cat_sums
     ]
 
-    # Savings rate = (income + expense) / income if income > 0.
+    monthly_expenses_qs = (
+        qs.filter(amount__lt=0)
+        .annotate(month=ExtractMonth('date'))
+        .values('month')
+        .annotate(total=Sum('amount'))
+        .order_by('month')
+    )
+    monthly_expenses = [
+        {"month": item["month"], "total": float(item["total"])}
+        for item in monthly_expenses_qs
+    ]
+
+    average_expense = float(abs(total_expense)) / max(qs.count(), 1)
+    savings = float(total_income + total_expense)
+
     savings_rate = None
     if total_income:
         savings_rate = ((total_income + total_expense) / total_income) * 100
+
+    risk_level = "low"
+    if total_expense > total_income:
+        risk_level = "high"
+    elif total_expense > (total_income * 0.8):
+        risk_level = "medium"
 
     # Simple anomaly detection – any single category > 30% of total expense.
     anomalies = []
@@ -100,9 +125,13 @@ def get_financial_context(user) -> Dict:
         "month": date.today().strftime("%Y-%m"),
         "total_income": float(total_income),
         "total_expense": float(total_expense),
+        "savings": savings,
         "top_categories": top_categories,
         "savings_rate": float(savings_rate) if savings_rate is not None else None,
         "anomalies": anomalies,
+        "monthly_expenses": monthly_expenses,
+        "average_expense": average_expense,
+        "risk_level": risk_level,
     }
 
 # Helper for formatting values used in anomalies.

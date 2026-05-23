@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <p class="subtitle">Overview of your financial health.</p>
+</div>
+
+<div class="card-grid">
+    <section class="metric-card">
+        <h3>Total Income</h3>
+        <p class="metric-value">$5,000</p>
+    </section>
+
+    <section class="metric-card">
+        <h3>Total Expense</h3>
+        <p class="metric-value">$3,000</p>
+    </section>
+
+    <section class="metric-card">
+        <h3>Savings</h3>
+        <p class="metric-value">$2,000</p>
+    </section>
+</div>
+
+<section class="panel">
+    <h2>Recent Insights</h2>
+    <div class="panel__content">
+        <div class="insight-item">
+            <h4>Top spending category</h4>
+            <p>Food & Dining</p>
+        </div>
+        <div class="insight-item">
+            <h4>Best month</h4>
+            <p>March</p>
+        </div>
+        <div class="insight-item">
+            <h4>Next goal</h4>
+            <p>Save $1,000 for emergency funds</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
